@@ -221,3 +221,60 @@ function hideToast(toastEl) {
     }
   });
 })();
+
+
+/* ============================================================
+   5. HAMBURGER MENU
+   Toggles the mobile nav drawer open/closed
+   ============================================================ */
+(function initHamburger() {
+  const btn    = document.getElementById('nav-hamburger');
+  const drawer = document.getElementById('nav-mobile');
+  const links  = drawer ? drawer.querySelectorAll('a') : [];
+
+  if (!btn || !drawer) return;
+
+  function openMenu() {
+    btn.classList.add('is-open');
+    drawer.classList.add('is-open');
+    btn.setAttribute('aria-expanded', 'true');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden'; // prevent scroll-behind
+  }
+
+  function closeMenu() {
+    btn.classList.remove('is-open');
+    drawer.classList.remove('is-open');
+    btn.setAttribute('aria-expanded', 'false');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function toggleMenu() {
+    btn.classList.contains('is-open') ? closeMenu() : openMenu();
+  }
+
+  // Toggle on burger click
+  btn.addEventListener('click', toggleMenu);
+
+  // Close when any link is tapped
+  links.forEach((link) => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Close on outside tap
+  document.addEventListener('click', (e) => {
+    if (
+      drawer.classList.contains('is-open') &&
+      !drawer.contains(e.target) &&
+      !btn.contains(e.target)
+    ) {
+      closeMenu();
+    }
+  });
+
+  // Close if viewport widens past 900 px (e.g. orientation change)
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 900) closeMenu();
+  }, { passive: true });
+})();
